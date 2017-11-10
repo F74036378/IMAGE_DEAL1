@@ -93,7 +93,7 @@ class Application:
 		img = cv2.imread('eye.jpg')
 		img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 		cv2.imshow('gray_img2.1', img)
-		detect_img = cv2.Canny(img, 0, 255)
+		detect_img = cv2.Canny(img, 150, 300)
 		cv2.imshow('detect_img2.1', detect_img)
 
 		cv2.waitKey(0)
@@ -101,19 +101,26 @@ class Application:
 	#button for problem 2.2
 	def btn_22_on_click(self):
 		#add your code here
-		'''img = cv2.imread('eye.jpg')
-		img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-		detect_img = cv2.Canny(img, 0, 255)
-		circles = cv2.HoughCircles(detect_img,cv2.HOUGH_GRADIENT, 1, 100)
+		img = cv2.imread('eye.jpg')
+		cimg = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+		draw_img = np.ones(img.shape, dtype=np.uint8)
+		#	HoughCircles has Canny detector itself
+		circles = cv2.HoughCircles(cimg, cv2.HOUGH_GRADIENT, 1, 20,param1=300,param2=40,minRadius=10,maxRadius=50)
 
 		circles = np.uint16(np.around(circles))
 		for i in circles[0,:]:
 			# draw the outer circle
-			cv2.circle(detect_img,(i[0],i[1]),i[2],(0,255,0),2)
+			cv2.circle(draw_img,(i[0],i[1]),i[2],(0,0,255),2)
 			# draw the center of the circle
-			cv2.circle(detect_img,(i[0],i[1]),2,(0,0,255),3)
+			#cv2.circle(fimg,(i[0],i[1]),2,(0,0,255),3)
 
-		cv2.imshow('detected circles',detect_img)'''
+		#	get Canny result to draw (has the same Canny parameter with HoughCircles)
+		fimg = cv2.Canny(img,150,300)
+		fimg = cv2.cvtColor(fimg, cv2.COLOR_GRAY2RGB)
+
+		#	combine draw and Canny result
+		mix_draw = cv2.addWeighted(draw_img, 1, fimg, 1, 0)
+		cv2.imshow('detected circles',mix_draw)
 		cv2.waitKey(0)
 
 	#button for problem 2.3
